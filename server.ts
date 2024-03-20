@@ -2,7 +2,7 @@ import express, { Application, NextFunction, Request, Response } from "express";
 import { UserDto } from "./dto/user-dto";
 import { UserRequestDto } from "./dto/request/user-dto.request";
 import apiIndex from "./api/index"
-import { connection } from "./config/db";
+import { connection, connectionPool } from "./config/db";
 
 const app: Application = express();
 
@@ -37,18 +37,22 @@ app.use('/api', apiIndex);
 // });
 
 //app.use(customErrorMiddleware);
-app.listen(port, () => {
-    console.log(`App is listening on port ${port} !`);
+app.listen(port, async() => {
+    // console.log(`App is listening on port ${port} !`);
 
-    const sql = "select *from users";
-    connection.query(sql,(error, results, fields) => {
-        if (error) {
-            console.error('Error executing query: ', error);
-            return;
-        } else {
-            for (const row of results as any) {
-                console.log(row.username);
-            }
-        }
-    });
-});
+
+    //내가 상담원 하나를 계속 쓴다
+    // const connection = await connectionPool.getConnection();
+    // await connection.beginTransaction()
+    // const [rows, fields] = await connection.query("select *from student");
+    // console.log(rows);
+    // console.log(fields);
+    // await connection.commit();
+    // connection.release()
+
+
+    // 자동으로 할당
+    const [rows, fields] = await connectionPool.query("select *from student");
+    console.log(rows);
+    console.log(fields);
+}); 
