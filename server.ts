@@ -73,6 +73,8 @@ app.post("/login",async (req:Request, res:Response, next:NextFunction)=>{
             userpw : string
         }
         const user = req.body as loginData
+        console.log(req.sessionID) // 컴터 하나당 하나 나옴 // 예 : QDl5fZL_MhrMzc_bbH39WOvE49mB57NS
+        
         const foundUser = await isExistUserByUserId(user.userid)
         if(!isSameUserByUserPw(user.userpw, foundUser.userpw)) throw new Error("not valid user")
 
@@ -80,7 +82,6 @@ app.post("/login",async (req:Request, res:Response, next:NextFunction)=>{
             uid : foundUser.uid,
             userid: foundUser.userid,
             username : foundUser.username,
-
         }
         res.json({msg : "successfully login user!!"})
     }catch(err ){
